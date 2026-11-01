@@ -1,3 +1,10 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="رحلة دمعة اللبان: لعبة عن شجرة اللبان العُمانية، من إعداد تركي بن طارق الربيعي، لمسابقة يوم الزراعة العُماني.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box;height:100%}[hidden]{display:none!important}img{max-width:100%}</style>
 <title>رحلة دمعة اللبان</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -129,6 +136,8 @@ body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--font);ove
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
+</head>
+<body>
 <div id="app">
   <canvas id="c" aria-label="لعبة رحلة دمعة اللبان"></canvas>
   <div id="ui"></div>
@@ -747,3 +756,6 @@ resize();
 ready.catch(()=>{}).then(()=>{setTimeout(()=>{build();document.getElementById('load').remove();go('title');requestAnimationFrame(frame);window.__game={go,ST,scenes}},30)});
 })();
 </script>
+
+</body>
+</html>
