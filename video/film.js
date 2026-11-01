@@ -139,7 +139,7 @@ function shot4(g,f){ // what is it used for — the harvest
   CUTS.forEach(([x,y],i)=>{const fc=S4.cut0+i*S4.cutD;if(f<fc)return;
     g.save();g.fillStyle='#EADFC6';g.beginPath();g.ellipse(x,y,22*E.outExpo(P(f,fc,5)),10,-.2,0,7);g.fill();g.strokeStyle='rgba(120,90,60,.5)';g.lineWidth=2;g.stroke();g.restore();
     for(let k=0;k<5;k++){const dt=(f-fc)/FPS;if(dt>1)break;const R=rng(i*10+k+1),vx=(R()-.5)*170,vy=-R()*130;g.save();g.globalAlpha=1-dt;g.fillStyle='#F2EADB';g.beginPath();g.ellipse(x+vx*dt,y+vy*dt+300*dt*dt,4,2.5,R()*3,0,7);g.fill();g.restore()}
-    const s=E.outQuint(P(f,fc+4,40));if(s>0){put(g,SP.tearW,x,y+6+s*12,{s:(.4+s*.45),a:1-dry});put(g,SP.tear,x,y+6+s*12,{s:(.4+s*.45),a:dry});
+    const s=E.outQuint(P(f,fc+4,40));if(s>0){const col=mix('#FBF8F0','#EFC766',dry);g.save();g.strokeStyle=col;g.lineCap='round';g.lineWidth=7*s;g.beginPath();g.moveTo(x,y+2);g.lineTo(x+1,y+4+s*20);g.stroke();g.restore();put(g,SP.tearW,x,y+8+s*20,{s:(.5+s*.75),a:1-dry});put(g,SP.tear,x,y+8+s*20,{s:(.5+s*.75),a:dry});
       if(dry>.3){put(g,SP.tear,x-15,y+5,{s:.55*dry});put(g,SP.tear,x+15,y+10,{s:.5*dry})}}});
   // manqaf: travels cut to cut, swipes on each
   const mStart=S4.cut0-20,mEnd=S4.cut0+2*S4.cutD+14;
@@ -164,7 +164,7 @@ function shot4(g,f){ // what is it used for — the harvest
 // caravan distance (precomputed so any frame renders alone)
 const DIST=(()=>{const a=[0];for(let i=1;i<=450;i++){const v=10.5*cl01(i/22)*cl01((385-i)/55);a.push(a[i-1]+v)}return a})();
 const dAt=f=>{const i=Math.max(0,Math.min(449,Math.floor(f))),fr=f-i;return lerp(DIST[i],DIST[i+1],fr)};
-const CXC=880,DEND=DIST[450],PORT=DEND+190,SIGNS=[[dAt(55),'وادي دوكة'],[dAt(215),'شصر'],[PORT+70,'سمهرم']];
+const CXC=880,DEND=DIST[450],PORT=DEND+270,SIGNS=[[dAt(55),'وادي دوكة'],[dAt(215),'شصر'],[DEND-250,'سمهرم']];
 function shot5(g,f){ // importance: the caravan
   const d=dAt(f),moving=f<380;
   g.drawImage(SP.sky600,0,0,W,H);put(g,SP.sun,1100,110,{});clouds(g,f+1275,[[300,120,1,8],[800,80,.7,6]]);
@@ -179,8 +179,9 @@ function shot5(g,f){ // importance: the caravan
   put(g,SP.ruins,CXC-(DEND-170-d)+0,GY+6,{s:1/1.2});
   for(const[sd,t]of SIGNS){const sx=CXC-(sd-d);if(sx>-200&&sx<W+200)put(g,SP.sign[t],sx,GY+6,{s:1/1.2})}
   const st=Math.floor(f/FPS*7)%2,bob=moving?st*3:0;const cy=GY-bob;
-  put(g,moving&&st?SP.camelB:SP.camelA,CXC,cy+4,{s:1.25/1.3});put(g,SP.ride,CXC+16,cy-136,{s:.9/1.2});
-  if(f>392)turki(g,CXC-230,GY+62,f,.8,'cheer');
+  put(g,moving&&st?SP.camelB:SP.camelA,CXC,cy+4,{s:1.25/1.3});
+  const dm=P(f,392,14);if(dm<=0)put(g,SP.ride,CXC+16,cy-136,{s:.9/1.2});
+  else{const p=E.inOutQuart(dm),jx=lerp(CXC+16,CXC-150,p),jy=lerp(cy-136+60,GY+62,p)-Math.sin(p*Math.PI)*70;if(dm<1)put(g,SP.stand,jx,jy,{s:.85/1.3});else turki(g,CXC-150,GY+62,f,.85,'cheer')}
   chip(g,'أهمية النبات في عُمان',C.imp,f,6);
   const v1=vis(f,26,190);pill(g,[['منذ آلاف السنين تحمل القوافل اللبان',C.deep]],1222,140,40,v1);pill(g,[['إلى ميناء ',C.deep],['سمهرم',C.coral]],1222,204,40,vis(f,34,190));
   pill(g,[['«أرض اللبان»',C.coral],[' في قائمة التراث العالمي لليونسكو',C.deep]],1222,140,40,vis(f,226));
@@ -253,7 +254,7 @@ function sfxEvents(){const ev=[];const at=(sh,lf)=>SHOT[sh][0]+lf;
   // S5 camel steps, signs, port
   let ls=-1;for(let lf=0;lf<380;lf++){const st=Math.floor(lf/FPS*7);if(st!==ls){ls=st;ev.push(['hoof',at(4,lf)])}}
   for(const[sd]of SIGNS.slice(0,2)){let lf=0;while(lf<449&&CXC-(sd-dAt(lf))<CXC-10)lf++;ev.push(['chime',at(4,lf)])}
-  ev.push(['gull',at(4,350)],['gull',at(4,372)]);
+  ev.push(['gull',at(4,350)],['gull',at(4,372)]);ev.push(['pop',at(4,406)],['sparkle',at(4,410)]);
   // S6 drops
   TG.forEach((o,i)=>{const hit=at(5,S6.drop0+i*S6.dropD+S6.fall);ev.push(['plop',hit]);ev.push([o.k,hit])});
   // S7
